@@ -1,5 +1,11 @@
+import { Bar } from 'react-chartjs-2';
+
 const Charts = ({ aiSummary }) => {
-  return <div>Charts go here</div>;
+  return (
+    <div>
+      <Bar data={aiSummary} />
+    </div>
+  );
 };
 
 export default Charts;
