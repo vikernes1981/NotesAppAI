@@ -1,9 +1,9 @@
 import { Bar } from 'react-chartjs-2';
 
-const Charts = ({ aiSummary }) => {
+const Charts = ({ chartData }) => {
   return (
     <div>
-      <Bar data={aiSummary} />
+      <Bar data={chartData} />
     </div>
   );
 };

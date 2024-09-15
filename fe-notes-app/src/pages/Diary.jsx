@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 const Diary = () => {
   const [entries, seEntries] = useState([]);
 
+  
+
   useEffect(() => {
     (async () => {
       try {
