@@ -19,15 +19,12 @@ const MoodAIAnalysis = ({ entries }) => {
       const myHeaders = new Headers();
       myHeaders.append("provider", "open-ai");
       myHeaders.append("mode", "production");
-
-      console.log('API Key:', apiKey); // Log the API key to ensure it's being read correctly
       const authorizationValue = `${apiKey}`;
-      console.log('Authorization Value:', authorizationValue); // Log the authorization value
       myHeaders.append("Authorization", authorizationValue); // Ensure this is correctly set
       myHeaders.append("Content-Type", "application/json");
 
       const raw = JSON.stringify({
-        model: "gpt-4o",
+        model: "gpt-4",
         stream: false,
         messages: [
           {
@@ -48,7 +45,6 @@ const MoodAIAnalysis = ({ entries }) => {
         redirect: "follow"
       };
 
-      console.log(`Entries after join: ${entries.map(entry => entry.content).join(' ')}`); // Log the entries values
 
       const response = await fetch('https://gen-ai-wbs-consumer-api.onrender.com/api/v1/chat/completions', requestOptions);
       if (!response.ok) {
@@ -75,26 +71,26 @@ const MoodAIAnalysis = ({ entries }) => {
   // Example chart data for Chart.js
   
 
-  const chartData = aiSummary && typeof aiSummary.moodBreakdown === 'object' ? {
-    labels: Object.keys(aiSummary.moodBreakdown), // Using moodBreakdown from API response
+  const chartData = aiSummary && typeof aiSummary === 'string' ? {
+    labels: ['Positive', 'Negative', 'Neutral'], // Example labels
     datasets: [{
-      label: 'Mood Breakdown',
-      data: Object.values(aiSummary.moodBreakdown),
+      label: 'Mood Analysis',
+      data: [Math.random() * 100, Math.random() * 100, Math.random() * 100], // Example random data
       backgroundColor: [
         'rgba(75, 192, 192, 0.2)',
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
       ],
       borderColor: [
         'rgba(75, 192, 192, 1)',
         'rgba(255, 99, 132, 1)',
         'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
       ],
       borderWidth: 1,
     }],
   } : null;
+
+  console.log('Chart Data:', chartData); // Log the chart data
 
   return (
     <>
@@ -121,7 +117,7 @@ const MoodAIAnalysis = ({ entries }) => {
             </div>
             <div className='textarea textarea-success w-1/2 h-[400px] overflow-y-scroll'>
               {chartData ? (
-                <Charts data={chartData} /> // Use the Charts component to display the chart
+                <Charts aiSummary={chartData} /> // Use the Charts component to display the chart
               ) : (
                 'No data available for chart'
               )}
