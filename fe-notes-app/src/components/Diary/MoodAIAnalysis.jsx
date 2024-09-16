@@ -105,20 +105,15 @@ const MoodAIAnalysis = ({ entries }) => {
   const chartData =
     aiSummary && typeof aiSummary === "string"
       ? {
-          labels: ["Positive", "Negative", "Neutral"], // Example labels
+          labels: ["Positive", "Negative", "Neutral"],
           datasets: [
             {
               label: "Mood Analysis",
-              // data: [
-              //   botMessage.moodAnalysis.tone.positive,
-              //   botMessage.moodAnalysis.tone.negative,
-              //   botMessage.moodAnalysis.tone.neutral
-              // ],
               data: [
                 toneValues.positive,
                 toneValues.negative,
                 toneValues.neutral,
-              ], // Example random data
+              ],
               backgroundColor: [
                 "rgba(75, 192, 192, 0.2)",
                 "rgba(255, 99, 132, 0.2)",
