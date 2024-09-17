@@ -8,21 +8,26 @@ const useDiaryContext = () => useContext(DiaryContext);
 
 const DiaryContextProvider = ({ children }) => {
   const [entries, setEntries] = useState([]);
+  const [updateList, setUpdateList] = useState(false);
   
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get(
-          `${import.meta.env.VITE_NOTES_API}/entries`
-        );
-        setEntries(data);
-      } catch (error) {
-        toast.error(error.message);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   console.log("Diary Context Provider: useEffect [] triggered");
+
+  //   (async () => {
+  //     try {
+  //       const { data } = await axios.get(
+  //         `${import.meta.env.VITE_NOTES_API}/entries`
+  //       );
+  //       setEntries(data);
+  //     } catch (error) {
+  //       toast.error(error.message);
+  //     }
+  //   })();
+  // }, []);
 
   useEffect(() => {
+    console.log("Diary Context Provider: useEffect [updateList] triggered");
+    
     (async () => {
       try {
         const { data } = await axios.get(
@@ -33,11 +38,11 @@ const DiaryContextProvider = ({ children }) => {
         toast.error(error.message);
       }
     })();
-  }, [entries]);
+  }, [updateList]);
   
 
   return (
-    <DiaryContext.Provider value={{ entries, setEntries }}>
+    <DiaryContext.Provider value={{ entries, setEntries, setUpdateList }}>
       {children}
     </DiaryContext.Provider>
   );
