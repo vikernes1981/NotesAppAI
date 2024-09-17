@@ -1,23 +1,9 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { CreateEntry, MoodAIAnalysis, EntriesList, GenerateData } from "@/components/Diary";
-import { toast } from "react-toastify";
+import { useDiaryContext } from "@/context/DiaryContextProvider";
 
 const Diary = () => {
-  const [entries, setEntries] = useState([]);
-  
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get(
-          `${import.meta.env.VITE_NOTES_API}/entries`
-        );
-        setEntries(data);
-      } catch (error) {
-        toast.error(error.message);
-      }
-    })();
-  }, []);
+
+  const { entries, setEntries } = useDiaryContext();
 
   return (
     <>
