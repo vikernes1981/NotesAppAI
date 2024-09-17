@@ -9,7 +9,7 @@ function GenerateData({ setEntries }) {
       {loading ? (
         <button
           onClick={() => generateTestEntries({ setEntries, setLoading })}
-          className="bg-red-300 text-white font-bold py-2 px-4 rounded-xl shadow-lg"
+          className="bg-red-300 text-white font-bold py-2 px-4 rounded-xl shadow-lg cursor-wait"
         >
           Loading Test Entries...
         </button>
@@ -18,7 +18,7 @@ function GenerateData({ setEntries }) {
           onClick={() => generateTestEntries({ setEntries, setLoading })}
           className="bg-blue-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-xl shadow-lg"
         >
-          Generate Test Entries (Refresh Page after Loading)
+          Generate Test Entries
         </button>
       )}
     </div>
