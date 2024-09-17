@@ -6,12 +6,12 @@ import getImage from "../lib/getImage";
 import { toast } from "react-toastify";
 import { useDiaryContext } from "@/context/DiaryContextProvider";
 
-function EntryDetails({ entries }) {
+function EntryDetails() {
   const { entryId } = useParams();
   const [entry, setEntry] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUpdateList } = useDiaryContext();
+  const {entries, setEntries, setUpdateList } = useDiaryContext();
 
   const getEntry = async () => {
     try {
@@ -41,6 +41,9 @@ function EntryDetails({ entries }) {
       `${import.meta.env.VITE_NOTES_API}/entries/${entryId}`,
       newEntry
     );
+    setEntries(newEntry, ...entries.filter((e) => e.id !== entryId));
+    console.log(entries);
+    
     setLoading(false);
     // alert("Image Generated");
     toast.success("Image Generated");

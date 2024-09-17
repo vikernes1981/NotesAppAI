@@ -58,7 +58,7 @@ const generateTestEntries = async ({
 
     console.log("Test Entries:", testEntries.diaryEntries);
 
-    testEntries.diaryEntries.map(async (entry) => {
+    testEntries.diaryEntries.map((entry) => {
       axios.post(`${import.meta.env.VITE_NOTES_API}/entries`, {
         title: entry.title,
         date: entry.date,
@@ -68,7 +68,7 @@ const generateTestEntries = async ({
       });
     });
 
-    setEntries(testEntries);
+    // setEntries(testEntries);
     setLoading(false);
     toast.success("Test Entries Generated");
     setUpdateList((prev) => !prev);
