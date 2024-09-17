@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { toast } from "react-toastify";
 const generateTestEntries = async ({ setEntries, setLoading }) => {
   const apiKey = import.meta.env.VITE_GEN_AI_API_KEY;
 
@@ -68,6 +68,8 @@ const generateTestEntries = async ({ setEntries, setLoading }) => {
     console.error("Error generating Data:", error.message);
   }
   setLoading(false);
+  // alert("Test Entries Generated");
+  toast.success("Test Entries Generated");
 
 };
 

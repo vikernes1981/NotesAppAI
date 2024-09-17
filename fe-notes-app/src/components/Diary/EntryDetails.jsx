@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import getImage from "../lib/getImage";
+import { toast } from "react-toastify";
 
 function EntryDetails({ entries }) {
   const { entryId } = useParams();
@@ -39,6 +40,8 @@ function EntryDetails({ entries }) {
       newEntry
     );
     setLoading(false);
+    // alert("Image Generated");
+    toast.success("Image Generated");
   };
 
   return entry === null ? (

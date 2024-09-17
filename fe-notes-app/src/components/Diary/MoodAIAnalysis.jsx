@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { toast } from "react-toastify";
 import {
   Chart as ChartJS,
   Title,
@@ -93,6 +94,7 @@ const MoodAIAnalysis = ({ entries }) => {
       // console.log("AI Summary:", botMessage.summary);
 
       console.log(botMessage.moodAnalysis.tone.positive);
+      toast.success("AI Analysis Generated");
     } catch (error) {
       console.error("Error fetching AI summary:", error.message);
       setAiSummary({ error: error.message }); // Handle error by setting error message in state
