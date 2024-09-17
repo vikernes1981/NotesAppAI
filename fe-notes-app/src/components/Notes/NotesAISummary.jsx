@@ -8,6 +8,8 @@ const NotesAISummary = ({ notes }) => {
   const [stream, setStream] = useState(false);
   const [aiSummary, setAiSummary] = useState(null); // To store AI result
 
+  const notesJson = JSON.stringify(notes);
+
   const handleAISummary = async () => {
     setStream(true);
     try {
@@ -15,29 +17,30 @@ const NotesAISummary = ({ notes }) => {
       const myHeaders = new Headers();
       myHeaders.append("provider", "open-ai");
       myHeaders.append("mode", "production");
-      const authorizationValue = `${apiKey}`;
-      myHeaders.append("Authorization", authorizationValue); // Ensure this is correctly set
+      myHeaders.append("Authorization", `${apiKey}`); // Corrected header format
       myHeaders.append("Content-Type", "application/json");
 
-      console.log('Headers:', myHeaders);
-
       const raw = JSON.stringify({
-        model: "gpt-4",
+        model: "gpt-4o",
         stream: false,
+        response_format: { type: "json_object" },
         messages: [
           {
-        role: "system",
-        content: "You are quite dramatic"
-          },
-          {
         role: "user",
-        content: `Give me a summary of this note's entry: ${notes[0]?.content || ''}`
+        content: `I have a list of notes with titles. For each note, read the content, then create a brief summary of the main points or key information. Display each summary UNDER the corresponding title. Please format it as follows:
+      
+        **Title of the Note**
+        
+        Summary: [Brief summary of the note content]
+
+        Here is the list of notes:
+        ${notesJson}
+
+        Please provide only the summary content in JSON format.`
           }
         ]
       });
-
-      console.log('Request body:', raw);
-
+      console.log(notesJson)
       const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -45,10 +48,7 @@ const NotesAISummary = ({ notes }) => {
         redirect: "follow"
       };
 
-      console.log('Request options:', requestOptions);
-
       const response = await fetch('https://gen-ai-wbs-consumer-api.onrender.com/api/v1/chat/completions', requestOptions);
-      console.log('Response:', response);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -59,28 +59,28 @@ const NotesAISummary = ({ notes }) => {
       const data = await response.json();
       console.log('Response data:', data);
 
-      data.message.content = data.message.content.replace(/[\n\/]/g, ''); // Remove new lines and slashes
       
-      // Extract and set only the content from the response
-      setAiSummary(data.message.content);
-      console.log('AI Summary:', data.message.content);
-        } catch (error) {
+      const cleanedContent = data.message?.content?.replace(/[\n\/\{\}\[\]]/g, '')
+        .replace(/"notes":|"title":|"date":|"summary":/gi, '') || 'No summary available';
+      console.log('Type of cleanedContent:', typeof cleanedContent);
+      setAiSummary(cleanedContent);
+      console.log('AI Summary:', cleanedContent);
+    } catch (error) {
       console.error('Error fetching AI summary:', error.message);
       setAiSummary({ error: error.message }); // Handle error by setting error message in state
-        } finally {
+    } finally {
       setStream(false); // Stop loading state
       console.log('Finished AI summary generation.');
     }
   };
+
   return (
     <>
       <div className='fixed bottom-4 right-4'>
         <button
-          onClick={() => {
-            console.log('Opening modal...');
-            modalRef.current.showModal();
-          }}
+          onClick={() => modalRef.current.showModal()}
           className='bg-purple-400 hover:bg-purple-300 text-white font-bold py-2 px-4 rounded-full shadow-lg w-10 h-10'
+          aria-label='Open AI Summary Modal'
         >
           ✨
         </button>
@@ -88,18 +88,15 @@ const NotesAISummary = ({ notes }) => {
       <dialog id='modal-note' className='modal' ref={modalRef}>
         <div className='modal-box h-[600px] py-0'>
           <div className='modal-action items-center justify-between mb-2'>
-            <h1 className='text-2xl text-center'>Get AI Gen summary</h1>
-            <label htmlFor='Stream?' className='flex items-center gap-1'>
+            <h1 className='text-2xl text-center'>Get AI Gen Summary</h1>
+            <label htmlFor='stream' className='flex items-center gap-1'>
               Stream?
               <input
-                id='Stream?'
+                id='stream'
                 type='checkbox'
                 className='toggle toggle-error'
                 checked={stream}
-                onChange={() => {
-                  console.log('Toggling stream:', !stream);
-                  setStream(p => !p);
-                }}
+                onChange={() => setStream(prev => !prev)}
               />
             </label>
             <form method='dialog'>
@@ -111,13 +108,13 @@ const NotesAISummary = ({ notes }) => {
               className='textarea textarea-success w-full h-[400px] overflow-y-scroll'
               ref={resultsRef}
             >
-              {aiSummary ? aiSummary.error ? `Error: ${aiSummary.error}` : aiSummary : 'AI SUMMARY GOES HERE'}
+              {aiSummary ? (aiSummary.error ? `Error: ${aiSummary.error}` : aiSummary) : 'AI SUMMARY GOES HERE'}
             </div>
             <button
               className='mt-5 btn bg-purple-500 hover:bg-purple-400 text-white'
               onClick={handleAISummary}
             >
-              Gen AI summary ✨
+              Gen AI Summary ✨
             </button>
           </div>
         </div>
