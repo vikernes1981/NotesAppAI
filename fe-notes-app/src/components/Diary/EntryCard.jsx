@@ -1,6 +1,7 @@
 const EntryCard = ({ entry }) => {
+
   return (
-    <div className='card bg-base-100 shadow-xl'>
+    <div className='card bg-base-100 shadow-xl hover:bg-teal-200 cursor-pointer'>
       <figure className='bg-white h-48'>
         <img src={entry.image} alt={entry.title} className='object-cover h-full w-full' />
       </figure>

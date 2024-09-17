@@ -54,14 +54,13 @@ const MoodAIAnalysis = ({ entries }) => {
             role: "user",
             content: `You are a mood analysis bot. Analyze the mood of this diary entries. 
             Said diary entries are provided in the request body as a JSON object. 
-            You will output a JSON object with the frist key being "summary" of the mood as a string and 
+            You will output a JSON object with the first key being "summary" of the mood as a string and 
             you will provide a second key being "moodAnalysis" in quantitative measureable metrics.
             Said metrics reflect a score between 0 and 100.            
             Said mood analysis consists of following keys:
             "overallMood", "tone", "overallTone".
             The "tone" consists of "positive", "negative", "neutral".
             Here is the JSON object of the entries: ${entriesJson}`,
-            // content: entriesJson,
           },
         ],
       });

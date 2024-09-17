@@ -1,9 +1,11 @@
 import axios from "axios";
 
-const generateTestEntries = async ({ setEntries }) => {
+const generateTestEntries = async ({ setEntries, setLoading }) => {
   const apiKey = import.meta.env.VITE_GEN_AI_API_KEY;
 
   try {
+    setLoading(true);
+
     const myHeaders = new Headers();
     myHeaders.append("provider", "open-ai");
     myHeaders.append("mode", "production");
@@ -18,10 +20,13 @@ const generateTestEntries = async ({ setEntries }) => {
       messages: [
         {
           role: "user",
-          content: `JSON mode. Generate 6 diary entries to be used for a mood analysis.
+          content: `JSON mode. Generate 10 diary entries to be used for a mood analysis.
+
+          The tone of the diary entries should be very negative and depressing.
+
             Said diary entries are in JSON format and are provided in your response message under "diaryEntries".
             Each diary inside the JSON object should have following keys: id, date, title, image-url, content.
-            Said image-url is a random cat image, the image-url is valdidated by you beforehand.`,
+            Each image-url will be a web url showing a random cat image, its existence validated by your beforehand.`,
         },
       ],
     });
@@ -62,6 +67,8 @@ const generateTestEntries = async ({ setEntries }) => {
   } catch (error) {
     console.error("Error generating Data:", error.message);
   }
+  setLoading(false);
+
 };
 
 export default generateTestEntries;
