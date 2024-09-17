@@ -21,6 +21,19 @@ const DiaryContextProvider = ({ children }) => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_NOTES_API}/entries`
+        );
+        setEntries(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    })();
+  }, [entries]);
   
 
   return (

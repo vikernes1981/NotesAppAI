@@ -1,42 +1,58 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import getImage from "../lib/getImage";
 
 function EntryDetails({ entries }) {
   const { entryId } = useParams();
-  const modalRef = useRef(null);
   const [entry, setEntry] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const generateImage = async () => {
+  const getEntry = async () => {
+    try {
+      const data = await axios.get(
+        `${import.meta.env.VITE_NOTES_API}/entries/${entryId}`
+      );
+      console.log(data.data);
+      setEntry(data.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await axios.get(
-          `${import.meta.env.VITE_NOTES_API}/entries/${entryId}`
-        );
-        console.log(data.data);
-        setEntry(data.data);
-      } catch (error) {
-        console.error(error);
-      }
-    })(),
-      [];
-  });
+    getEntry();
+  }, []);
+
+  const generateImage = async () => {
+    if (entry === null) return;
+    setLoading(true);
+    const imageUrl = await getImage({ content: entry.content });
+    console.log(imageUrl);
+    const newEntry = { ...entry, image: imageUrl };
+    console.log(newEntry);
+    setEntry(newEntry);
+    await axios.put(
+      `${import.meta.env.VITE_NOTES_API}/entries/${entryId}`,
+      newEntry
+    );
+    setLoading(false);
+  };
 
   return entry === null ? (
     <div>Loading...</div>
   ) : (
-    // <dialog id='modal-note' className='modal' ref={modalRef}>
     <div className="flex justify-center p-5 font-sans w-full box-border">
-
       <div className="card w-full max-w-lg shadow-lg rounded-lg overflow-hidden bg-white">
-
         <div className="p-5 bg-base-100">
-        <button onClick={() => navigate("/")} className="btn btn-error text-white">X</button>
+          <button
+            onClick={() => navigate("/")}
+            className="btn btn-error text-white"
+          >
+            X
+          </button>
           <h1 className="text-center text-2xl font-bold">{entry.title}</h1>
           <p className="text-lg text-center">{entry.description}</p>
         </div>
@@ -50,11 +66,16 @@ function EntryDetails({ entries }) {
             </p>
           </div>
         </div>
-        <button onClick={generateImage} className="btn btn-primary text-white">Generate Image</button>
-        
+        {loading ? (<button onClick={generateImage} className="btn bg-red-400 hover:bg-red-500 text-white cursor-wait">
+          Image is being generated... Please wait
+        </button>) : (
+        <button onClick={generateImage} className="btn btn-primary text-white">
+          Generate Image
+        </button>) 
+
+}
       </div>
     </div>
-    // </dialog>
   );
 }
 
