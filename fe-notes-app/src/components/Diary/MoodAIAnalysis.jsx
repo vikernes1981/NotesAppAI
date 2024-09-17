@@ -1,6 +1,24 @@
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Charts from "./Charts"; // Import Charts component
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js"; // Import ChartJS components
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+);
 
 const apiKey = import.meta.env.VITE_GEN_AI_API_KEY;
 
@@ -9,8 +27,6 @@ const MoodAIAnalysis = ({ entries }) => {
   const [loading, setLoading] = useState(false);
   const [aiSummary, setAiSummary] = useState(null); // To store AI result
   const [toneValues, setToneValues] = useState(null);
-
-  console.log("Entries Complete:", entries);
 
   const entriesJson = JSON.stringify(entries);
 
