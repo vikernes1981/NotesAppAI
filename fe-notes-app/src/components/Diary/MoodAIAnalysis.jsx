@@ -1,26 +1,9 @@
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
 import Charts from "./Charts"; // Import Charts component
 
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
-
 const apiKey = import.meta.env.VITE_GEN_AI_API_KEY;
+
 const MoodAIAnalysis = ({ entries }) => {
   const modalRef = useRef();
   const [loading, setLoading] = useState(false);
@@ -47,10 +30,6 @@ const MoodAIAnalysis = ({ entries }) => {
         stream: false,
         response_format: { type: "json_object" },
         messages: [
-          // {
-          //   role: "system",
-          //   content: "You are a mood analysis bot. Analyze the mood of this diary entries. Said diary entries are provided in the request body as a JSON object. You will output a JSON object with a summary of the mood as a string and a mood analysis including the tone of the text.",
-          // },
           {
             role: "user",
             content: `You are a mood analysis bot. Analyze the mood of this diary entries. 
@@ -88,16 +67,12 @@ const MoodAIAnalysis = ({ entries }) => {
 
       console.log("AI Response:", botMessage);
 
-      // Extract and set only the content from the response
+      // Extract
       setAiSummary(botMessage.summary);
       setToneValues(botMessage.moodAnalysis.tone);
-      // console.log("AI Summary:", botMessage.summary);
-
-      console.log(botMessage.moodAnalysis.tone.positive);
       toast.success("AI Analysis Generated");
     } catch (error) {
       console.error("Error fetching AI summary:", error.message);
-      setAiSummary({ error: error.message }); // Handle error by setting error message in state
     } finally {
       setLoading(false); // Stop loading state
     }

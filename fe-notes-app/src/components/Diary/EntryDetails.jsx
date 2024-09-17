@@ -4,12 +4,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import getImage from "../lib/getImage";
 import { toast } from "react-toastify";
+import { useDiaryContext } from "@/context/DiaryContextProvider";
 
 function EntryDetails({ entries }) {
   const { entryId } = useParams();
   const [entry, setEntry] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUpdateList } = useDiaryContext();
 
   const getEntry = async () => {
     try {
@@ -42,6 +44,7 @@ function EntryDetails({ entries }) {
     setLoading(false);
     // alert("Image Generated");
     toast.success("Image Generated");
+    setUpdateList((prev) => !prev);
   };
 
   return entry === null ? (
@@ -57,7 +60,9 @@ function EntryDetails({ entries }) {
             X
           </button>
           <h1 className="text-center text-2xl font-bold">{entry.title}</h1>
-          <p className="text-lg text-center">{entry.description}</p>
+        </div>
+        <div className="flex items-center justify-center">
+          <img src={entry.image} alt={entry.title} className="w-[50%]" />
         </div>
         <div className="flex justify-around p-5 bg-base-100">
           <div className="flex-1 p-2">

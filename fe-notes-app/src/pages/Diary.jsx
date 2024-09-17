@@ -3,14 +3,14 @@ import { useDiaryContext } from "@/context/DiaryContextProvider";
 
 const Diary = () => {
 
-  const { entries, setEntries } = useDiaryContext();
+  const { entries, setEntries, setUpdateList } = useDiaryContext();
 
   return (
     <>
       <EntriesList entries={entries} />
       <CreateEntry setEntries={setEntries} />
       <MoodAIAnalysis entries={entries} />
-      <GenerateData setEntries={setEntries} />
+      <GenerateData setEntries={setEntries} setUpdateList={setUpdateList} />
     </>
   );
 };
