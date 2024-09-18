@@ -6,12 +6,17 @@ import getImage from "../lib/getImage";
 import { toast } from "react-toastify";
 import { useDiaryContext } from "@/context/DiaryContextProvider";
 
-function EntryDetails({ entries }) {
+function EntryDetails() {
   const { entryId } = useParams();
   const [entry, setEntry] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [initialImageLoaded, setInitialImageLoaded] = useState(false);
   const navigate = useNavigate();
-  const { setUpdateList } = useDiaryContext();
+  const { entries, setEntries, setUpdateList } = useDiaryContext();
+
+  const handleInitialImageLoad = () => {
+    setInitialImageLoaded(true);
+  };
 
   const getEntry = async () => {
     try {
@@ -41,6 +46,9 @@ function EntryDetails({ entries }) {
       `${import.meta.env.VITE_NOTES_API}/entries/${entryId}`,
       newEntry
     );
+    setEntries(newEntry, ...entries.filter((e) => e.id !== entryId));
+    console.log("Entries updated with new image", entries);
+
     setLoading(false);
     // alert("Image Generated");
     toast.success("Image Generated");
@@ -61,8 +69,20 @@ function EntryDetails({ entries }) {
           </button>
           <h1 className="text-center text-2xl font-bold">{entry.title}</h1>
         </div>
-        <div className="flex items-center justify-center">
-          <img src={entry.image} alt={entry.title} className="w-[50%]" />
+        <div className="flex items-center self-center justify-center">
+          {!initialImageLoaded && (
+            <div className="flex justify-center items-center h-full">
+              Loading...
+            </div>
+          )}
+
+          <img
+            onLoad={handleInitialImageLoad}
+            src={entry.image}
+            alt={entry.title}
+            className="object-contain w-full"
+          />
+
         </div>
         <div className="flex justify-around p-5 bg-base-100">
           <div className="flex-1 p-2">
@@ -74,14 +94,21 @@ function EntryDetails({ entries }) {
             </p>
           </div>
         </div>
-        {loading ? (<button onClick={generateImage} className="btn bg-red-400 hover:bg-red-500 text-white cursor-wait">
-          Image is being generated... Please wait
-        </button>) : (
-        <button onClick={generateImage} className="btn btn-primary text-white">
-          Generate Image
-        </button>) 
-
-}
+        {loading ? (
+          <button
+            onClick={generateImage}
+            className="btn bg-red-400 hover:bg-red-500 text-white cursor-wait"
+          >
+            Image is being generated... Please wait
+          </button>
+        ) : (
+          <button
+            onClick={generateImage}
+            className="btn btn-primary text-white"
+          >
+            Generate Image
+          </button>
+        )}
       </div>
     </div>
   );
