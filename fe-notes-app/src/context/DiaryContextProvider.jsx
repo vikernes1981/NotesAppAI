@@ -10,6 +10,8 @@ const DiaryContextProvider = ({ children }) => {
   const [entries, setEntries] = useState([]);
   const [updateList, setUpdateList] = useState(false);
 
+  console.log("Initial entries:", entries);
+
 
   useEffect(() => {
     console.log("Diary Context Provider: useEffect [updateList] triggered");
@@ -19,7 +21,10 @@ const DiaryContextProvider = ({ children }) => {
         const { data } = await axios.get(
           `${import.meta.env.VITE_NOTES_API}/entries`
         );
-        setEntries(data);
+        const entriesFromApi = await data
+        setEntries(entriesFromApi);
+        console.log("Diary Entries fetched:", entriesFromApi);
+        console.log("Diary Entries set:", entries);
       } catch (error) {
         toast.error(error.message);
       }
